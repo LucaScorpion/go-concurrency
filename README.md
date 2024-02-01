@@ -29,5 +29,23 @@ Verbind met de server:
 nc localhost 7000
 ```
 
-Input aan de server zou naar alle clients gestuurd moeten worden.
-Input aan een client zou naar de server, en vervolgens naar alle clients gestuurd moeten worden.
+Door iets te typen in Netcat wordt dat over de socket naar de server verzonden,
+en berichten die binnenkomen worden geprint naar stdout.
+
+## Opdracht
+
+### Deel 1
+
+Het eerste doel is om te zorgen dat meerdere clients met de server kunnen verbinden,
+en dat de server alles wat binnenkomt broadcast naar alle clients.
+Als dit goed werkt zou de server ook alle inkomende berichten moeten printen (prefixed met "< ").
+
+### Deel 2
+
+Nu berichten van clients goed gebroadcast worden, zou het ook handig zijn als de server zelf berichten kan sturen.
+Zorg dat je input van stdin op de server afhandelt, en broadcast dit ook naar alle clients.
+
+### Deel 3
+
+Wanneer een client een bericht naar de server stuurt, krijgt deze het bericht ook zelf weer binnen.
+Zorg dat de server bij het broadcasten van een bericht de client waar het vandaan komt overslaat.
