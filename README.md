@@ -34,6 +34,9 @@ en berichten die binnenkomen worden geprint naar stdout.
 
 ## Opdracht
 
+De code waarmee je moet beginnen staat op de `main` branch.
+De oplossingen voor de drie delen staan op de `solution-N` branches (waar `N` het nummer van de opdracht is).
+
 ### Deel 1
 
 Het eerste doel is om te zorgen dat meerdere clients met de server kunnen verbinden,
