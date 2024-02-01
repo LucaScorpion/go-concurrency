@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"os"
 	"sync"
 )
 
@@ -24,10 +25,21 @@ func main() {
 
 	// This needs to run in a goroutine, since it loops forever.
 	go acceptConnections(l)
+	go readFromStdin()
 
 	// Broadcast incoming messages to all connections.
 	for msg := range incomingMessages {
 		broadcast(msg)
+	}
+}
+
+func readFromStdin() {
+	// Read lines from stdin, treat those as an incoming message.
+	stdin := bufio.NewReader(os.Stdin)
+	for {
+		if line, err := stdin.ReadString('\n'); err == nil {
+			incomingMessages <- line
+		}
 	}
 }
 
