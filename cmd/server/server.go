@@ -25,10 +25,14 @@ func main() {
 	stdin := bufio.NewReader(os.Stdin)
 	for {
 		if line, err := stdin.ReadString('\n'); err == nil {
-			for _, con := range connections {
-				con.Write([]byte(line))
-			}
+			broadcast(line)
 		}
+	}
+}
+
+func broadcast(msg string) {
+	for _, con := range connections {
+		con.Write([]byte(msg))
 	}
 }
 
@@ -63,5 +67,6 @@ func readFromConnection(con net.Conn) {
 
 		// Use Print instead of Println since line already has a trailing newline.
 		fmt.Print("< ", line)
+		broadcast(line)
 	}
 }
