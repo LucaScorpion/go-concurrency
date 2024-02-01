@@ -43,6 +43,9 @@ Het eerste doel is om te zorgen dat meerdere clients met de server kunnen verbin
 en dat de server alles wat binnenkomt broadcast naar alle clients.
 Als dit goed werkt zou de server ook alle inkomende berichten moeten printen (prefixed met "< ").
 
+Let op!
+Omdat je hier met goroutines gaat werken is het ook belangrijk dat je - waar nodig - gedeelde memory access synchroniseert.
+
 ### Deel 2
 
 Nu berichten van clients goed gebroadcast worden, zou het ook handig zijn als de server zelf berichten kan sturen.
