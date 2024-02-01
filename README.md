@@ -32,6 +32,17 @@ nc localhost 7000
 Door iets te typen in Netcat wordt dat over de socket naar de server verzonden,
 en berichten die binnenkomen worden geprint naar stdout.
 
+## Race Detector
+
+Go heeft een ingebouwde race detector, die race conditions kan vinden.
+Deze is eenvoudig te gebruiken, door de `-race` flag mee te geven aan je `go` commands.
+
+Start de server met race detector:
+
+```shell
+go run -race ./cmd/server
+```
+
 ## Opdracht
 
 De code waarmee je moet beginnen staat op de `main` branch.
@@ -45,6 +56,7 @@ Als dit goed werkt zou de server ook alle inkomende berichten moeten printen (pr
 
 Let op!
 Omdat je hier met goroutines gaat werken is het ook belangrijk dat je - waar nodig - gedeelde memory access synchroniseert.
+Check of dit goed werkt met de race detector.
 
 ### Deel 2
 
