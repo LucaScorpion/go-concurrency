@@ -4,11 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"sync"
 )
 
 var port = 7000
 
 var connections []net.Conn
+var connLock = sync.RWMutex{}
 
 var incomingMessages = make(chan string)
 
@@ -30,9 +32,12 @@ func main() {
 }
 
 func broadcast(msg string) {
+	// Here we only need read access to the connections, so ensure nothing is writing to it.
+	connLock.RLock()
 	for _, con := range connections {
 		con.Write([]byte(msg))
 	}
+	connLock.RUnlock()
 }
 
 func acceptConnections(l net.Listener) {
@@ -49,7 +54,12 @@ func acceptConnections(l net.Listener) {
 
 func handleConnection(con net.Conn) {
 	fmt.Println("New connection")
+
+	// Here we are writing to the connections, so acquire the write lock.
+	connLock.Lock()
 	connections = append(connections, con)
+	connLock.Unlock()
+
 	readFromConnection(con)
 	// When we get here, it means reading has stopped, and thus the connection was closed.
 	fmt.Println("Connection closed")
