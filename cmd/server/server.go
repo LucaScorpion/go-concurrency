@@ -13,7 +13,12 @@ var port = 7000
 var connections []net.Conn
 var connLock = sync.RWMutex{}
 
-var incomingMessages = make(chan string)
+var incomingMessages = make(chan Message)
+
+type Message struct {
+	msg string
+	src net.Conn
+}
 
 func main() {
 	// Start the TCP server.
@@ -38,16 +43,21 @@ func readFromStdin() {
 	stdin := bufio.NewReader(os.Stdin)
 	for {
 		if line, err := stdin.ReadString('\n'); err == nil {
-			incomingMessages <- line
+			incomingMessages <- Message{
+				msg: line,
+				src: nil,
+			}
 		}
 	}
 }
 
-func broadcast(msg string) {
+func broadcast(msg Message) {
 	// Here we only need read access to the connections, so ensure nothing is writing to it.
 	connLock.RLock()
 	for _, con := range connections {
-		con.Write([]byte(msg))
+		if con != msg.src {
+			con.Write([]byte(msg.msg))
+		}
 	}
 	connLock.RUnlock()
 }
@@ -88,6 +98,9 @@ func readFromConnection(con net.Conn) {
 		}
 
 		fmt.Print("< ", line)
-		incomingMessages <- line
+		incomingMessages <- Message{
+			msg: line,
+			src: con,
+		}
 	}
 }
