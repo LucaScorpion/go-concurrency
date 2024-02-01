@@ -20,9 +20,13 @@ func main() {
 		panic(listenErr)
 	}
 
-	acceptConnections(l)
+	// This needs to run in a goroutine, since it loops forever.
+	go acceptConnections(l)
 
-	// TODO: Broadcast incoming messages to all connections.
+	// Broadcast incoming messages to all connections.
+	for msg := range incomingMessages {
+		broadcast(msg)
+	}
 }
 
 func broadcast(msg string) {
@@ -37,7 +41,8 @@ func acceptConnections(l net.Listener) {
 		if newCon, err := l.Accept(); err != nil {
 			fmt.Println("Error while accepting connection:", err)
 		} else {
-			handleConnection(newCon)
+			// This needs to run in a goroutine, since it will keep reading input from the connection.
+			go handleConnection(newCon)
 		}
 	}
 }
@@ -62,6 +67,5 @@ func readFromConnection(con net.Conn) {
 
 		fmt.Print("< ", line)
 		incomingMessages <- line
-		// TODO: This seems to stop working after one message?
 	}
 }
