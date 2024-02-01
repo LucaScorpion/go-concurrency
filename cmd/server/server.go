@@ -4,12 +4,13 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-	"os"
 )
 
 var port = 7000
 
 var connections []net.Conn
+
+var incomingMessages = make(chan string)
 
 func main() {
 	// Start the TCP server.
@@ -21,13 +22,7 @@ func main() {
 
 	acceptConnections(l)
 
-	// Read from stdin, send lines to all connections.
-	stdin := bufio.NewReader(os.Stdin)
-	for {
-		if line, err := stdin.ReadString('\n'); err == nil {
-			broadcast(line)
-		}
-	}
+	// TODO: Broadcast incoming messages to all connections.
 }
 
 func broadcast(msg string) {
@@ -65,8 +60,8 @@ func readFromConnection(con net.Conn) {
 			break
 		}
 
-		// Use Print instead of Println since line already has a trailing newline.
 		fmt.Print("< ", line)
-		broadcast(line)
+		incomingMessages <- line
+		// TODO: This seems to stop working after one message?
 	}
 }
